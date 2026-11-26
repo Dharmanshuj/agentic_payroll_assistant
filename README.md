@@ -67,7 +67,7 @@ The two backends exist because the payroll data model (JPA entities, salary calc
 | HikariCP | (Boot-managed) | Connection pooling; tuned (see `application.properties`) specifically because Neon's serverless Postgres auto-suspends after ~5 min idle, and the defaults let the pool hold onto since-killed connections |
 | PostgreSQL driver | (Boot-managed) | Talks to the same Neon database as the Python side |
 | jjwt | 0.12.6 | Validates JWTs issued by the Python side (shared `SECRET_KEY`) so a request authenticated once works against both services |
-| Maven (via `mvnw`) | wrapper 3.3.4, Maven 3.9.14 | No local Maven install needed, the wrapper downloads it |
+| Maven | wrapper 3.3.4 / Maven 3.9.14 | Local development uses `mvnw`; the Spring Boot Docker build uses the official Maven 3.9.14 + Java 17 image |
 
 ### Database
 
@@ -126,7 +126,7 @@ payroll_chatbot/
 │   │   ├── security/             # JwtAuthenticationFilter, JwtTokenService
 │   │   └── config/               # SecurityConfig, McpToolConfig
 │   ├── src/main/resources/application.properties
-│   └── Dockerfile, .dockerignore # Spring Boot container (multi-stage, via mvnw)
+│   └── Dockerfile, .dockerignore # Spring Boot container (multi-stage, official Maven build image)
 ├── frontend/Dashboard/          # Next.js app (App Router)
 │   ├── app/                     # login, dashboard pages
 │   └── components/              # login-form, chat-card, admin/register-form, admin/update-attendance-form, ui/*

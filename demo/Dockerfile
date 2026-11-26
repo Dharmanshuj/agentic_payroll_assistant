@@ -11,20 +11,16 @@
 # server.port=${PORT:8080}.
 
 # ---- Build stage ----
-FROM eclipse-temurin:17-jdk AS build
+FROM maven:3.9.14-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY .mvn/ .mvn/
-COPY mvnw pom.xml ./
-# mvnw needs LF line endings and the executable bit even if git/Windows checkout
-# stripped them.
-RUN sed -i 's/\r$//' mvnw && chmod +x mvnw
+COPY pom.xml ./
 
 # Warm the local Maven repo in its own layer so code changes don't re-download deps.
-RUN ./mvnw -B -ntp dependency:go-offline
+RUN mvn -B -ntp dependency:go-offline
 
 COPY src ./src
-RUN ./mvnw -B -ntp clean package -DskipTests
+RUN mvn -B -ntp clean package -DskipTests
 
 # ---- Runtime stage ----
 FROM eclipse-temurin:17-jre
