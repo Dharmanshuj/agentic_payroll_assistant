@@ -14,13 +14,14 @@
 FROM maven:3.9.14-eclipse-temurin-17 AS build
 WORKDIR /app
 
+COPY .mvn/settings.xml .mvn/settings.xml
 COPY pom.xml ./
 
 # Warm the local Maven repo in its own layer so code changes don't re-download deps.
-RUN mvn -B -ntp dependency:go-offline
+RUN mvn -s .mvn/settings.xml -B -ntp dependency:go-offline
 
 COPY src ./src
-RUN mvn -B -ntp clean package -DskipTests
+RUN mvn -s .mvn/settings.xml -B -ntp clean package -DskipTests
 
 # ---- Runtime stage ----
 FROM eclipse-temurin:17-jre
